@@ -1,3 +1,4 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -5,7 +6,7 @@ using API.Entities;
 using API.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
-namespace API;
+namespace API.Services;
 
 public class TokenService(IConfiguration config) : ITokenService
 {
@@ -15,10 +16,9 @@ public class TokenService(IConfiguration config) : ITokenService
         if (tokenKey.Length < 64) throw new Exception("Your tokenKey needs to be longer");
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
 
-
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.UserName)
+            new (ClaimTypes.NameIdentifier, appUser.UserName)
         };
 
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
@@ -34,6 +34,5 @@ public class TokenService(IConfiguration config) : ITokenService
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         return tokenHandler.WriteToken(token);
-
     }
 }

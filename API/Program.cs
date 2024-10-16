@@ -1,13 +1,13 @@
 using API;
 using API.Data;
 using API.Interfaces;
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddScoped<ITokenService, TokenService>();
 
 //register data context service
 builder.Services.AddDbContext<DataContext>(opt =>
@@ -15,8 +15,10 @@ builder.Services.AddDbContext<DataContext>(opt =>
     //creating configuration default connection string 
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
-
 builder.Services.AddCors();
+builder.Services.AddScoped<ITokenService, TokenService>();
+
+
 
 var app = builder.Build();
 
